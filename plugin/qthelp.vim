@@ -1,16 +1,16 @@
 " Name:        qthelp
 " Author:      xaizek (xaizek@gmail.com)
-" Version:     1.0
+" Version:     1.0.0
 "
 " Description: This plugin would allow you to open Qt help pages in browser
 "              from your C++ source code. Currently it can show help if the word
-"              under your cursor is a class name, a variable name or a
+"              underneath your cursor is a class name, a variable name or a
 "              class-member name.
 "
 " Examples:    QStr|ing trackTitle, artistName;
 "              QString track|Title, artistName("Unknown");
 "              track|Title = "Unknown";
-"              Running command QHelpOnThis will open help on QString.
+"              Running command :QHelpOnThis will open help on QString.
 "
 "              trackTitle.ri|ght(10);
 "              Running command :QHelpOnThis will open help on QString::right.
@@ -21,7 +21,8 @@
 " Configuring: g:qthelp_browser - command to run your browser
 "              default: '' (so an error message will be printed if your try to
 "                           use plugin)
-"              Note: on Windows use something like
+"              Note: on Windows use something like (notice 'start' at the
+"                    beginning)
 "                    'start c:\Program files\Mozilla Firefox\firefox.exe'
 "                    or Vim will be waiting until you close your browser.
 "
@@ -29,10 +30,11 @@
 "              2. Add that tags-file into your 'tags' option (WARNING: doing
 "                 this in your .vimrc file can slow down and pollute completion
 "                 list for not Qt-projects).
-"              3. Let g:qthelp_browser command to run your browser.
+"              3. Setup g:qthelp_browser variable with the command to run your
+"                 browser.
 "              4. Map command QHelpOnThis on some hotkey.
 "              5. Use QHelp from command-line for faster navigating through
-"                 help (to escape manual searching of needed method).
+"                 help (to escape manual searching of needed section).
 "
 " Limitation:  I didn't found a way to determine inheritance hierarchy using
 "              tags so trying
@@ -43,6 +45,10 @@
 " Warning:     In some cases it can take a while for searching definition (for
 "              example when it doesn't exist) if this happens hit Ctrl-C to
 "              break searching.
+"
+" ToDo:        - Maybe it should look for declaration not only in one header
+"                file ("companion"), but in all included from this?
+"              - Is there a way to determine variable type without regexps?
 
 if exists("g:loaded_qthelp")
     finish
@@ -77,13 +83,13 @@ let s:typeregex = '^\s*\%(const\s\+\)\?'.s:nsregex.'\zs'.s:idregex.'\ze'
 " b:foundinfile
 " b:foundatline
 
-" some commands
+" commands definition
 command! -nargs=0 QHelpOnThis call QHHelp('')
 command! -nargs=1 QHelp call QHHelp('<args>')
 
 " the main function
-" cword parameter is what we want to get help on or '' for analyzing word under
-" cursor
+" cword parameter is what we want to get help on or '' for analyzing word
+" underneath the cursor
 function! QHHelp(query)
     call s:QHDebug('QHDBG: QHHelp(cword="'.a:query.'")')
     if a:query != ''
@@ -100,10 +106,10 @@ function! QHHelp(query)
     endif
 endfunction
 
-" determines if a class name, a variable name or a class member name is under
-" cursor and returns appropriate taglist
+" determines if a class name, a variable name or a class member name is
+" underneath the cursor and returns appropriate taglist
 function! s:QHGetTagsListUC()
-    " wuc is for Word Under Cursor
+    " wuc is for Word Underneath the Cursor
     let l:wuc = expand('<cword>')
     let l:lst = taglist('//apple_ref/cpp/cl//'.l:wuc.'$')
     if len(l:lst) == 0  " if WUC is var_name
@@ -123,7 +129,7 @@ function! s:QHGetTagsListUC()
     return l:lst
 endfunction
 
-" b:membername should be set before calling this function because it should
+" b:membername should be set before calling this function because one should
 " modify it last
 function! s:QHGetTagsListOnMember(class, member)
     let l:lst = taglist('^'.a:member.'-typedef$')
@@ -234,7 +240,7 @@ endfunction
 " stuff below is for analyzing code --------------------------------------------
 " ------------------------------------------------------------------------------
 
-" returns list with information about Variable Under Cursor in form of
+" returns list with information about Variable Underneath the Cursor in form of
 " [classname, membername]
 function! QHGetVUCInfo()
     let l:wuc = expand('<cword>')
@@ -256,7 +262,7 @@ function! QHGetVUCInfo()
 endfunction
 
 " this function searches for variable definition in current file and header
-" file if the current one is source
+" file if the current one is a source
 function! s:QHGetVarType(varname)
     let b:foundatline = line('.')
 
@@ -339,7 +345,7 @@ function! s:QHSearchComplexVarDef(varname)
     endif
 endfunction
 
-" searches for declaration of varname in args of current function
+" searches for declaration of varname in argument list of current function
 function! s:QHSearchVarDefInArgs(varname)
     let l:argdefregex = '[(,]\s*\%(const\)\?'.s:nsregex.s:idregex.s:varpfxregex
                    \.'\s\+'.a:varname.s:varsfxregex.'\s*[,)]\?'
@@ -410,4 +416,4 @@ function! s:QHGetWUCType(wuc)
     endif
 endfunction
 
-" vim: set foldmethod=syntax foldlevel=0 :
+" vim: set foldmethod=syntax foldlevel=0 :miv "
