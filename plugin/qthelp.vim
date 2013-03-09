@@ -1,6 +1,6 @@
 " Name:        qthelp
 " Author:      xaizek (xaizek@gmail.com)
-" Version:     1.1.1
+" Version:     1.1.2
 "
 " Description: This plugin would allow you to open Qt help pages in browser
 "              from your C++ source code. Currently it can show help if the word
@@ -55,6 +55,9 @@
 "              v1.0.1 (2013-03-09) - Fixed multiple load guard
 "              v1.1.1 (2013-03-09) - Added support for latest versions of Qt
 "                                    (thanks to Dmitry Frank).
+"              v1.1.2 (2013-05-14) - Fixed support for latest versions of Qt
+"                                    by the :QHelp command (thanks to Dmitry
+"                                    Frank).
 
 if exists("g:loaded_qthelp")
     finish
@@ -201,22 +204,14 @@ function! s:QHGetTagsList(query)
 
     let l:regex = '\('.s:idregex.'\)::\('.s:idregex.'\)'
     if empty(matchstr(a:query, l:regex))
-        let l:lst = taglist('//apple_ref/cpp/cl//'.a:query.'$')
+        let l:lst = s:QHTryFindClass(a:query)
         let b:membername = ''
     else
         let l:class = substitute(a:query, l:regex, '\1', '')
         call s:QHDebug('QHDBG: QHGetTagsList, class="'.l:class.'"')
         let l:member = substitute(a:query, l:regex, '\2', '')
         call s:QHDebug('QHDBG: QHGetTagsList, member="'.l:member.'"')
-        let l:lst = taglist('//apple_ref/cpp/clm/'.l:class.'/'.l:member.'$')
-        if empty(l:lst)
-            let l:lst = taglist('//apple_ref/cpp/instm/'
-                               \.l:class.'/'.l:member.'$')
-        endif
-        if empty(l:lst)
-            let l:lst = taglist('//apple_ref/cpp/tag/'
-                               \.l:class.'/'.l:member.'$')
-        endif
+        let l:lst = s:QHGetTagsListOnMember(l:class, l:member)
         let b:membername = l:member
     endif
 
