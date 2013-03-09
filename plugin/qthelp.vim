@@ -1,6 +1,6 @@
 " Name:        qthelp
 " Author:      xaizek (xaizek@lavabit.com)
-" Version:     1.1.3
+" Version:     1.1.4
 "
 " Description: This plugin would allow you to open Qt help pages in browser
 "              from your C++ source code. Currently it can show help if the word
@@ -60,6 +60,8 @@
 "                                    Frank).
 "              v1.1.3 (2013-05-14) - Fixed regular expression for filtering
 "                                    help tags (thanks to Dmitry Frank).
+"              v1.1.4 (2013-05-15) - Fixed issue with 'shellslash' option on
+"                                    Windows (thanks to Dmitry Frank).
 
 if exists("g:loaded_qthelp")
     finish
@@ -222,6 +224,11 @@ endfunction
 
 " opens users browser
 function! s:QHOpenBrowser(file)
+    let l:shellslash = &shellslash
+    if has('win32') && &shellslash
+        set noshellslash
+    endif
+
     if s:debugging == 1
         return
     endif
@@ -239,6 +246,8 @@ function! s:QHOpenBrowser(file)
         call s:QHTellUser('An error occuried while running your browser. '
                         \.'Maybe your g:qthelp_browser option is incorrect.')
     endtry
+
+    let &shellslash = l:shellslash
 endfunction
 
 " lets tell user about what we have found
