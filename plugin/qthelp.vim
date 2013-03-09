@@ -49,6 +49,7 @@
 " ToDo:        - Maybe it should look for declaration not only in one header
 "                file ("companion"), but in all included from this?
 "              - Is there a way to determine variable type without regexps?
+"              - Use Vim documentation format.
 
 if exists("g:loaded_qthelp")
     finish
