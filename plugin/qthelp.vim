@@ -1,6 +1,6 @@
 " Name:        qthelp
 " Author:      xaizek (xaizek@gmail.com)
-" Version:     1.0.1
+" Version:     1.1.1
 "
 " Description: This plugin would allow you to open Qt help pages in browser
 "              from your C++ source code. Currently it can show help if the word
@@ -53,6 +53,8 @@
 "
 " ChangeLog:   v1.0.0 (2010-12-07) - Initial version
 "              v1.0.1 (2013-03-09) - Fixed multiple load guard
+"              v1.1.1 (2013-03-09) - Added support for latest versions of Qt
+"                                    (thanks to Dmitry Frank).
 
 if exists("g:loaded_qthelp")
     finish
