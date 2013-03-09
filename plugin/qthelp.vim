@@ -1,6 +1,6 @@
 " Name:        qthelp
 " Author:      xaizek (xaizek@gmail.com)
-" Version:     1.0.0
+" Version:     1.0.1
 "
 " Description: This plugin would allow you to open Qt help pages in browser
 "              from your C++ source code. Currently it can show help if the word
@@ -52,12 +52,13 @@
 "              - Use Vim documentation format.
 "
 " ChangeLog:   v1.0.0 (2010-12-07) - Initial version
+"              v1.0.1 (2013-03-09) - Fixed multiple load guard
 
 if exists("g:loaded_qthelp")
     finish
 endif
 
-let g:loaded_gthelp = 1
+let g:loaded_qthelp = 1
 
 if !exists('g:qthelp_browser')
     let g:qthelp_browser = ''
