@@ -1,6 +1,6 @@
 " Name:        qthelp
 " Author:      xaizek (xaizek@lavabit.com)
-" Version:     1.1.2
+" Version:     1.1.3
 "
 " Description: This plugin would allow you to open Qt help pages in browser
 "              from your C++ source code. Currently it can show help if the word
@@ -58,6 +58,8 @@
 "              v1.1.2 (2013-05-14) - Fixed support for latest versions of Qt
 "                                    by the :QHelp command (thanks to Dmitry
 "                                    Frank).
+"              v1.1.3 (2013-05-14) - Fixed regular expression for filtering
+"                                    help tags (thanks to Dmitry Frank).
 
 if exists("g:loaded_qthelp")
     finish
@@ -192,7 +194,7 @@ endfunction
 " tries to guess tag by its name and name of the class
 function! s:QHGetWithoutAppleRef(tag, class)
     let l:lst = taglist('^'.a:tag.'$')
-    call filter(l:lst, 'v:val["filename"] =~? "[/\]'.a:class.'\.html$"')
+    call filter(l:lst, 'v:val["filename"] =~? "[/\\\\]'.a:class.'\.html$"')
     return l:lst
 endfunction
 
