@@ -50,6 +50,8 @@
 "                file ("companion"), but in all included from this?
 "              - Is there a way to determine variable type without regexps?
 "              - Use Vim documentation format.
+"
+" ChangeLog:   v1.0.0 (2010-12-07) - Initial version
 
 if exists("g:loaded_qthelp")
     finish
