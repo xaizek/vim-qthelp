@@ -115,21 +115,35 @@ endfunction
 function! s:QHGetTagsListUC()
     " wuc is for Word Underneath the Cursor
     let l:wuc = expand('<cword>')
+
     let l:lst = taglist('//apple_ref/cpp/cl//'.l:wuc.'$')
+    if empty(l:lst)
+        let l:lst = taglist('^'.l:wuc.'$')
+        call filter(l:lst, 'v:val["filename"] =~? "[/\]'.l:wuc.'.html$"')
+    endif
+
     if empty(l:lst) " if WUC is var_name
         let [l:class, b:membername] = QHGetVUCInfo()
         if empty(b:membername)
             let l:lst = taglist('//apple_ref/cpp/cl//'.l:class.'$')
+            if empty(l:lst)
+                let l:lst = taglist('^'.l:class.'$')
+            endif
         else
             let l:lst = s:QHGetTagsListOnMember(l:class, b:membername)
             if empty(l:lst)
                 let b:membername = ''
                 let l:lst = taglist('//apple_ref/cpp/cl//'.l:class.'$')
             endif
+            if empty(l:lst)
+                let b:membername = ''
+                let l:lst = taglist('^'.l:class.'$')
+            endif
         endif
     else
         let b:membername = ''
     endif
+
     return l:lst
 endfunction
 
@@ -137,11 +151,13 @@ endfunction
 " modify it last
 function! s:QHGetTagsListOnMember(class, member)
     let l:lst = taglist('^'.a:member.'-typedef$')
+    call filter(l:lst, 'v:val["filename"] =~? "[/\]'.a:class.'.html$"')
     if len(l:lst) != 0
         let b:membername = a:member.'-typedef'
         return l:lst
     endif
     let l:lst = taglist('^'.a:member.'-enum$')
+    call filter(l:lst, 'v:val["filename"] =~? "[/\]'.a:class.'.html$"')
     if len(l:lst) != 0
         let b:membername = a:member.'-enum'
         return l:lst
@@ -158,6 +174,10 @@ function! s:QHGetTagsListOnMember(class, member)
     endif
     if empty(l:lst)
         let l:lst = taglist('//apple_ref/cpp/tag/'.a:class.'/'.a:member.'$')
+    endif
+    if empty(l:lst)
+        let l:lst = taglist('^'.a:member.'$')
+        call filter(l:lst, 'v:val["filename"] =~? "[/\]'.a:class.'\.html$"')
     endif
     return l:lst
 endfunction
