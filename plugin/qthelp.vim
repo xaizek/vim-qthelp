@@ -98,7 +98,7 @@ function! QHHelp(query)
         let l:lst = s:QHGetTagsListUC()
     endif
 
-    if len(l:lst) == 0
+    if empty(l:lst)
         call s:QHTellUser("Nothing was found")
     else
         call s:QHDebug('QHDBG: QHHelp, filename="'.l:lst[0]['filename'].'"')
@@ -112,13 +112,13 @@ function! s:QHGetTagsListUC()
     " wuc is for Word Underneath the Cursor
     let l:wuc = expand('<cword>')
     let l:lst = taglist('//apple_ref/cpp/cl//'.l:wuc.'$')
-    if len(l:lst) == 0  " if WUC is var_name
+    if empty(l:lst) " if WUC is var_name
         let [l:class, b:membername] = QHGetVUCInfo()
-        if b:membername == ''
+        if empty(b:membername)
             let l:lst = taglist('//apple_ref/cpp/cl//'.l:class.'$')
         else
             let l:lst = s:QHGetTagsListOnMember(l:class, b:membername)
-            if len(l:lst) == 0
+            if empty(l:lst)
                 let b:membername = ''
                 let l:lst = taglist('//apple_ref/cpp/cl//'.l:class.'$')
             endif
@@ -143,16 +143,16 @@ function! s:QHGetTagsListOnMember(class, member)
         return l:lst
     endif
 
-    if len(l:lst) == 0
+    if empty(l:lst)
         let l:lst = taglist('//apple_ref/cpp/clm/'.a:class.'/'.a:member.'$')
     endif
-    if len(l:lst) == 0
+    if empty(l:lst)
         let l:lst = taglist('//apple_ref/cpp/instm/'.a:class.'/'.a:member.'$')
     endif
-    if len(l:lst) == 0
+    if empty(l:lst)
         let l:lst = taglist('//apple_ref/cpp/econst/'.a:class.'/'.a:member.'$')
     endif
-    if len(l:lst) == 0
+    if empty(l:lst)
         let l:lst = taglist('//apple_ref/cpp/tag/'.a:class.'/'.a:member.'$')
     endif
     return l:lst
@@ -170,11 +170,11 @@ function! s:QHGetTagsList(query)
         let l:member = substitute(a:query, l:regex, '\2', '')
         call s:QHDebug('QHDBG: QHGetTagsList, member="'.l:member.'"')
         let l:lst = taglist('//apple_ref/cpp/clm/'.l:class.'/'.l:member.'$')
-        if len(l:lst) == 0
+        if empty(l:lst)
             let l:lst = taglist('//apple_ref/cpp/instm/'
                                \.l:class.'/'.l:member.'$')
         endif
-        if len(l:lst) == 0
+        if empty(l:lst)
             let l:lst = taglist('//apple_ref/cpp/tag/'
                                \.l:class.'/'.l:member.'$')
         endif
@@ -247,7 +247,7 @@ function! QHGetVUCInfo()
     let l:wuctype = s:QHGetWUCType(wuc)
     if l:wuctype == 0 " we're assuming that this is varname
         let l:varname = s:QHGetVarType(l:wuc)
-        if l:varname == ''
+        if empty(l:varname)
             return [l:wuc, '']
         else
             return [l:varname, '']
