@@ -27,6 +27,8 @@
 "                    or Vim will be waiting until you close your browser.
 "
 " Using:       1. Make tags-file for your html-qthelp.
+"                 Addition by DFrank: just go to <Qt-current-version-path>/doc
+"                 (say, D:/Qt/4.8.4/doc), and run 'ctags -R .'.
 "              2. Add that tags-file into your 'tags' option (WARNING: doing
 "                 this in your .vimrc file can slow down and pollute completion
 "                 list for not Qt-projects).
