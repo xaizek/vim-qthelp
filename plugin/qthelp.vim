@@ -1,5 +1,5 @@
 " Name:        qthelp
-" Author:      xaizek (xaizek@gmail.com)
+" Author:      xaizek (xaizek@lavabit.com)
 " Version:     1.1.2
 "
 " Description: This plugin would allow you to open Qt help pages in browser
