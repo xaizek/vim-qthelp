@@ -1,6 +1,6 @@
 " Name:        qthelp
 " Author:      xaizek (xaizek@lavabit.com)
-" Version:     1.1.4
+" Version:     1.1.5
 "
 " Description: This plugin would allow you to open Qt help pages in browser
 "              from your C++ source code. Currently it can show help if the word
@@ -31,7 +31,10 @@
 "                 this in your .vimrc file can slow down and pollute completion
 "                 list for not Qt-projects).
 "              3. Setup g:qthelp_browser variable with the command to run your
-"                 browser.
+"                 browser.  The value is not escaped, this is up to you, so
+"                 it's possible to specify parameter list along with command
+"                 to be executed.  URL is appended to this command after a
+"                 space.
 "              4. Map command QHelpOnThis on some hotkey.
 "              5. Use QHelp from command-line for faster navigating through
 "                 help (to escape manual searching of needed section).
@@ -62,6 +65,8 @@
 "                                    help tags (thanks to Dmitry Frank).
 "              v1.1.4 (2013-05-15) - Fixed issue with 'shellslash' option on
 "                                    Windows (thanks to Dmitry Frank).
+"              v1.1.5 (2013-05-15) - Don't escape g:qthelp_browser on
+"                                    invocation (thanks to Dmitry Frank).
 
 if exists("g:loaded_qthelp")
     finish
@@ -241,7 +246,7 @@ function! s:QHOpenBrowser(file)
         let l:browserargs = l:browserargs.'&'
     endif
     try
-        exe ":silent !".shellescape(g:qthelp_browser)." ".l:browserargs
+        exe ':silent !'.g:qthelp_browser.' '.l:browserargs
     catch 'E484'
         call s:QHTellUser('An error occuried while running your browser. '
                         \.'Maybe your g:qthelp_browser option is incorrect.')
