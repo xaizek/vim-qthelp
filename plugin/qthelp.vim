@@ -1,6 +1,6 @@
 " Name:        qthelp
 " Author:      xaizek (xaizek@lavabit.com)
-" Version:     1.1.5
+" Version:     1.1.6
 "
 " Description: This plugin would allow you to open Qt help pages in browser
 "              from your C++ source code. Currently it can show help if the word
@@ -35,8 +35,11 @@
 "                 it's possible to specify parameter list along with command
 "                 to be executed.  URL is appended to this command after a
 "                 space.
-"              4. Map command QHelpOnThis on some hotkey.
-"              5. Use QHelp from command-line for faster navigating through
+"              4. Optionally setup g:qthelp_tags variable with custom value
+"                 for the 'tags' option, which will be used to look for Qt
+"                 documentation tags.
+"              5. Map command QHelpOnThis on some hotkey.
+"              6. Use QHelp from command-line for faster navigating through
 "                 help (to escape manual searching of needed section).
 "
 " Limitation:  I didn't found a way to determine inheritance hierarchy using
@@ -67,6 +70,8 @@
 "                                    Windows (thanks to Dmitry Frank).
 "              v1.1.5 (2013-05-15) - Don't escape g:qthelp_browser on
 "                                    invocation (thanks to Dmitry Frank).
+"              v1.1.6 (2013-05-15) - Add g:qthelp_tags option (thanks to
+"                                    Dmitry Frank).
 
 if exists("g:loaded_qthelp")
     finish
@@ -110,6 +115,12 @@ command! -nargs=1 QHelp call QHHelp('<args>')
 " underneath the cursor
 function! QHHelp(query)
     call s:QHDebug('QHDBG: QHHelp(cword="'.a:query.'")')
+
+    let l:tags = &l:tags
+    if exists('g:qthelp_tags')
+        let &l:tags = g:qthelp_tags
+    endif
+
     if empty(a:query)
         let l:lst = s:QHGetTagsListUC()
     else
@@ -122,6 +133,8 @@ function! QHHelp(query)
         call s:QHDebug('QHDBG: QHHelp, filename="'.l:lst[0]['filename'].'"')
         call <SID>QHOpenBrowser(l:lst[0]['filename'])
     endif
+
+    let &l:tags = l:tags
 endfunction
 
 " determines if a class name, a variable name or a class member name is
